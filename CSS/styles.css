@@ -1,0 +1,292 @@
+*{
+  font-family: "Space Grotesk", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  background-color: #212121;
+}
+
+@media (max-width: 945px){
+  
+}
+
+#header{
+  background-color: #212121;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  height: 60px;
+}
+
+.logo{
+  padding: 1px 15px;
+  height: 45px;
+}
+
+#navbar{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+
+#navbar li{
+  width: 100px;
+  list-style: none;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.2s ease, transform 0.3s ease;
+}
+
+#navbar li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: white;
+  z-index: 0;
+  transition: width 0.1s ease;
+}
+
+#navbar li:hover::before {
+  width: 100%;
+}
+
+#navbar li:hover a {
+  color: #1e1e1e;
+}
+
+#navbar li a {
+  text-decoration: none;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+p{
+  font-style: normal;
+}
+
+#hero {
+  background-color: #212121;
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#hero-left{
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#hero-left h3{
+  max-width: 550px;
+}
+
+#hero-left h1{
+  font-size: 2.5rem;
+  max-width: 550px;
+}
+
+#hero-left button {
+  position: relative;
+  background-color: transparent;
+  color: white;
+  font-size: 28px;
+  border-radius: 5px;
+  border: 2px solid white;
+  padding: 12px 28px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.2s ease, transform 0.3s ease;
+}
+
+#hero-left button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: white;
+  z-index: 0;
+  transition: width 0.1s ease;
+}
+
+#hero-left button:hover::before {
+  width: 100%;
+}
+
+#hero-left button:hover {
+  color: #1e1e1e;
+}
+
+#hero-left button span {
+  position: relative;
+  z-index: 2;
+}
+
+
+#hero h1,
+#hero h3 {
+  color: white;
+}
+
+#hero h3{
+  font-weight: 200;
+}
+
+#img-playstation{
+  height: auto;
+  margin: 10px;
+  padding-right: 5px;
+}
+
+#hot-products {
+  color: white;
+  padding: 50px;
+}
+
+#hot-products h2{
+  font-size: 35px;
+}
+
+.pro-container{
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:center;
+  gap: 10px;
+}
+
+.pro-container .pro {
+  width: 200px;
+  background-color: #343A3C;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.pro-container .pro h3{
+  color: #F2F2F2
+}
+
+.pro-container .pro:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, .75);
+  cursor: pointer;
+}
+
+.pro-container .pro img{
+  width: 120px;
+  height: auto;
+  border-radius: 20px;
+}
+
+.pro-des{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1px;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.pro-des button{
+  margin: 10px 0px ;
+  position: relative;
+  background-color: transparent;
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+  border: 2px solid white;
+  padding: 12px 28px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.2s ease, transform 0.3s ease;
+}
+
+.pro-des button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: white;
+  z-index: 0;
+  transition: width 0.1s ease;
+}
+
+.pro-des button:hover::before {
+  width: 100%;
+}
+
+.pro-des button:hover {
+  color: #1e1e1e;
+}
+
+.pro-des button span {
+  position: relative;
+  z-index: 2;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #e63946;
+  color: white;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 8px;
+}
+
+.new-price {
+  font-size: 130%;;
+}
+
+.pro {
+  position: relative; /* Required for badge positioning */
+}
