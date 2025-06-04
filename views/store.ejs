@@ -1,0 +1,100 @@
+<!-- views/store.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PS Curves - Store</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .user-avatar {
+      background-color: #333;
+      color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <section id="header">
+    <a href="/">
+      <img src="/Images/Logo.png" alt="Logo" class="logo">
+    </a>
+    <div>
+      <ul id="navbar">
+        <li><a href="/">Home</a></li>
+        <li><a class="active" href="/store">Shop</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <% if (isAuth && username) { %>
+          <li class="no-hover">
+            <a href="/logout">
+              <div class="user-avatar" title="<%= username %>">
+                <%= username[0].toUpperCase() %>
+              </div>
+            </a>
+          </li>
+        <% } else { %>        
+          <li class="no-hover">
+            <button onclick="window.location.href='/login'"><span>Login</span></button>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </section>
+
+  <section id="hot-products">
+    <h2>Product Store</h2>
+    <div class="pro-container">
+      <% if (products.length > 0) { %>
+        <% products.forEach(product => { %>
+          <div class="pro">
+            <% if (product.oldprice) { %>
+              <span class="discount-badge">
+                -<%= Math.round(((product.oldprice - product.newprice) / product.oldprice) * 100) %>%
+              </span>
+            <% } %>
+            
+            <!-- Wrap only the image in a link -->
+            <a href="/product/<%= product._id %>" class="product-link">
+              <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
+            </a>
+          
+            <div class="pro-des">
+              <!-- Wrap only the product name in a link -->
+              <h3>
+                <a href="/product/<%= product._id %>" class="product-link"><%= product.name %></a>
+              </h3>
+              
+              <p>
+                <% if (product.oldprice) { %>
+                  <span class="old-price">$<%= product.oldprice %></span> <br>
+                <% } %>
+                <span class="new-price">$<%= product.newprice %></span>
+              </p>
+          
+              <form action="/cart/add/<%= product._id %>" method="POST">
+                <button type="submit"><span>Add to Cart</span></button>
+              </form>
+            </div>
+          </div>
+          
+          
+        <% }) %>
+      <% } else { %>
+        <p>No products available.</p>
+      <% } %>
+    </div>
+  </section>
+</body>
+</html>

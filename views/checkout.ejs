@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');
+  </style>
+</head>
+<body>
+  <h1 id="checkout-title">Checkout</h1>
+
+  <div class="checkout-summary">
+    <table id="checkout-table">
+      <thead>
+        <tr>
+          <th class="col-item">Item</th>
+          <th class="col-price">Price</th>
+          <th class="col-quantity">Quantity</th>
+          <th class="col-total">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cart.forEach(item => { %>
+          <tr>
+            <td><%= item.name %></td>
+            <td class="col-price">$<%= (item.price ? item.price.toFixed(2) : '0.00') %></td>
+            <td class="col-quantity"><%= item.quantity %></td>
+            <td class="col-total">$<%= (item.total ? item.total.toFixed(2) : '0.00') %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <div class="checkout-total">
+      <strong>Grand Total:</strong> $<%= (grandTotal ? grandTotal.toFixed(2) : '0.00') %>
+    </div>
+  </div>
+
+  <form action="/place-order" method="POST" class="checkout-form">
+    <label for="fullName">Full Name *</label>
+    <input type="text" id="fullName" name="fullName" required placeholder="Your full name" />
+
+    <label for="email">Email Address *</label>
+    <input type="email" id="email" name="email" required placeholder="you@example.com" />
+
+    <label for="address">Shipping Address *</label>
+    <textarea id="address" name="address" required placeholder="1234 Main St, City, Country"></textarea>
+
+    <label class="checkbox-label" for="cod">
+      <input type="checkbox" id="cod" name="paymentMethod" value="cod" required />
+      Cash on Delivery *
+    </label>
+
+    <button type="submit" class="proceed-btn"><span>Place Order</span></button>
+  </form>
+</body>
+</html>

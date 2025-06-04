@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <h1 id="cart-title">Your Cart</h1>
+
+  <div class="cart-card">
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th class="col-item">Item</th>
+          <th class="col-price">Price</th>
+          <th class="col-quantity">Quantity</th>
+          <th class="col-total">Total</th>
+        </tr>
+      </thead>
+      <tbody id="cart-items">
+        <% if (cart && cart.length > 0) { 
+             let grandTotal = 0;
+             cart.forEach(item => {
+               grandTotal += item.total;
+        %>
+          <tr class="cart-row">
+            <td class="item-name"><%= item.name %></td>
+            <td class="item-price">$<%= item.price.toFixed(2) %></td>
+            <td class="item-quantity">
+              <button class="qty-btn" onclick="updateQuantity('<%= item.productId %>', 'decrease')">-</button>
+              <span id="qty-<%= item.productId %>"><%= item.quantity %></span>
+              <button class="qty-btn" onclick="updateQuantity('<%= item.productId %>', 'increase')">+</button>
+            </td>                       
+            <td class="item-total">$<span id="total-<%= item.productId %>"><%= item.total.toFixed(2) %></span></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <div class="cart-footer">
+      <div class="grand-total">
+        <strong>Total: </strong> $<span id="grand-total"><%= grandTotal.toFixed(2) %></span>
+      </div>
+      <button id="checkout-btn" class="proceed-btn" onclick="goToCheckout()">
+        <span>Proceed to Checkout <i class="fas fa-arrow-right"></i></span>
+      </button>            
+    </div>
+
+    <% } else { %>
+      <tr id="empty-cart-row">
+        <td colspan="4">Your cart is empty.</td>
+      </tr>
+      </tbody>
+    </table>
+    <% } %>
+  </div>
+
+  <script>
+    function updateQuantity(productId, action) {
+      fetch('/cart/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productId, action })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          if (data.removed) {
+            const row = document.querySelector(`#qty-${productId}`).closest('tr');
+            if (row) row.remove();
+          } else {
+            document.getElementById(`qty-${productId}`).textContent = data.newQuantity;
+            document.getElementById(`total-${productId}`).textContent = data.itemTotal.toFixed(2);
+          }
+
+          document.getElementById(`grand-total`).textContent = data.grandTotal.toFixed(2);
+
+          // Check if cart is empty by counting only cart-row elements
+          const cartTableBody = document.getElementById('cart-items');
+          if (cartTableBody.querySelectorAll('tr.cart-row').length === 0) {
+            cartTableBody.innerHTML = `
+              <tr id="empty-cart-row">
+                <td colspan="4">Your cart is empty.</td>
+              </tr>
+            `;
+            // Disable checkout button
+            const checkoutBtn = document.getElementById("checkout-btn");
+            checkoutBtn.disabled = true;
+            checkoutBtn.classList.add("disabled");
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error updating quantity:', error);
+      });
+    }
+
+    function goToCheckout() {
+      // Only redirect if button is enabled
+      const btn = document.getElementById("checkout-btn");
+      if (!btn.disabled) {
+        window.location.href = "/checkout";
+      }
+    }
+
+    function checkIfCartEmpty() {
+      const cartTableBody = document.getElementById("cart-items");
+      const checkoutBtn = document.getElementById("checkout-btn");
+
+      // Check if there are any cart rows left
+      const rows = cartTableBody.querySelectorAll("tr.cart-row");
+      if (rows.length === 0) {
+        cartTableBody.innerHTML = `
+          <tr id="empty-cart-row">
+            <td colspan="4">Your cart is empty.</td>
+          </tr>
+        `;
+        checkoutBtn.disabled = true;
+        checkoutBtn.classList.add("disabled");
+      } else {
+        checkoutBtn.disabled = false;
+        checkoutBtn.classList.remove("disabled");
+      }
+    }
+
+    // Call initially on page load
+    checkIfCartEmpty();
+  </script>
+</body>
+</html>
