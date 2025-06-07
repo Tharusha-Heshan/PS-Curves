@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Us - PS Curves</title>
+
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');
+    
+    .about-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 20px;
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .about-text {
+      flex: 1;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .about-text h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .about-text p {
+      margin-bottom: 20px;
+    }
+
+    .about-image-wrapper {
+      flex: 1;
+      text-align: center;
+    }
+
+    .about-image {
+      max-width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .about-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .about-text h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <%- include('partials/_navbar') %>
+
+
+  <div class="about-container">
+    <div class="about-text">
+      <h1>About PS Curves</h1>
+      <p><strong>PS Curves</strong> was born out of a passion for redefining style and self-expression through carefully curated fashion pieces. We believe in more than just trends — we believe in the power of individuality.</p>
+      <p>What started as a small project quickly grew into a brand that celebrates creativity, quality, and uniqueness. Every product you find on our store is hand-picked and designed with purpose, ensuring that our customers feel empowered in what they wear.</p>
+      <p>Our journey has only just begun — and we’re thrilled to have you along for the ride.</p>
+    </div>
+
+    <div class="about-image-wrapper">
+      <img src="/Images/About Us.png" alt="About PS Curves" class="about-image" />
+    </div>
+  </div>
+  <%- include('partials/_footer') %>
+</body>
+</html>

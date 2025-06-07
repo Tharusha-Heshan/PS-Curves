@@ -41,6 +41,33 @@ const ProductSchema = new mongoose.Schema({
   description: { type: String }
 }, { timestamps: true });
 
+// Order Schema
+const OrderSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items: [
+    {
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+      name: String,
+      price: Number,
+      quantity: Number
+    }
+  ],
+  shippingDetails: {
+    fullName: String,
+    email: String,
+    streetAddress: String,
+    city: String,
+    postalCode: String,
+    phone: String,
+    paymentMethod: String
+  },
+  totalAmount: Number,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Order = mongoose.model("Order", OrderSchema);
+
+
 const Product = mongoose.model("Product", ProductSchema);
 
-module.exports = { User, Product, store };
+module.exports = { User, Product, Order, store };

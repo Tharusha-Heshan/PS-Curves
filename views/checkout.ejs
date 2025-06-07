@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Checkout</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');
+    
   </style>
 </head>
 <body>
+  <%- include('partials/_navbar') %>
+
   <h1 id="checkout-title">Checkout</h1>
 
   <div class="checkout-summary">
@@ -35,26 +39,36 @@
     </table>
 
     <div class="checkout-total">
-      <strong>Grand Total:</strong> $<%= (grandTotal ? grandTotal.toFixed(2) : '0.00') %>
+      <strong>Total:</strong> $<%= (grandTotal ? grandTotal.toFixed(2) : '0.00') %>
     </div>
   </div>
 
   <form action="/place-order" method="POST" class="checkout-form">
     <label for="fullName">Full Name *</label>
-    <input type="text" id="fullName" name="fullName" required placeholder="Your full name" />
-
+    <input type="text" id="fullName" name="fullName" required placeholder="Full name" />
+  
     <label for="email">Email Address *</label>
-    <input type="email" id="email" name="email" required placeholder="you@example.com" />
-
-    <label for="address">Shipping Address *</label>
-    <textarea id="address" name="address" required placeholder="1234 Main St, City, Country"></textarea>
-
+    <input type="email" id="email" name="email" required placeholder="gamerguy@example.com" />
+  
+    <label for="streetAddress">Street Address *</label>
+    <input type="text" id="streetAddress" name="streetAddress" required placeholder="1234 Main St" />
+  
+    <label for="city">City *</label>
+    <input type="text" id="city" name="city" required placeholder="Your city" />
+  
+    <label for="postalCode">Postal Code *</label>
+    <input type="text" id="postalCode" name="postalCode" required placeholder="e.g., 00404" />
+  
+    <label for="phone">Phone Number *</label>
+    <input type="tel" id="phone" name="phone" required placeholder="+0712 345 678" />
+  
     <label class="checkbox-label" for="cod">
       <input type="checkbox" id="cod" name="paymentMethod" value="cod" required />
       Cash on Delivery *
     </label>
-
+  
     <button type="submit" class="proceed-btn"><span>Place Order</span></button>
   </form>
+  <%- include('partials/_footer') %>
 </body>
 </html>

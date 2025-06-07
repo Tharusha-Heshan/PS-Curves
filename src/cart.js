@@ -45,27 +45,30 @@ router.post('/add/:id', async (req, res) => {
     const product = await Product.findById(productId);
     if (!product) return res.status(404).send("Product not found");
 
-    const user = await User.findOne({ username: req.session.username });
-    if (!user) return res.status(404).send("User not found");
+    // Try to increment quantity if product already in cart
+    const updatedUser = await User.findOneAndUpdate(
+      { username: req.session.username, 'cart.productId': productId },
+      { $inc: { 'cart.$.quantity': 1 } },
+      { new: true }
+    );
 
-    const existingItem = user.cart.find(item => item.productId.toString() === productId);
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      user.cart.push({ productId, quantity: 1 });
+    if (!updatedUser) {
+      // Product not in cart, so add new item
+      await User.findOneAndUpdate(
+        { username: req.session.username },
+        { $push: { cart: { productId, quantity: 1 } } }
+      );
     }
 
-    await user.save();
+    res.json({ success: true });
 
-    res.redirect('/store');
   } catch (err) {
     console.error("Error adding to cart:", err);
     res.status(500).send("Error adding to cart");
   }
 });
 
-// Update quantity (POST /cart/update)
+// Update cart item quantity (POST /cart/update)
 router.post('/update', async (req, res) => {
   const { productId, action } = req.body;
 
@@ -74,40 +77,60 @@ router.post('/update', async (req, res) => {
   }
 
   try {
+    // Get current user with cart populated
     const user = await User.findOne({ username: req.session.username }).populate('cart.productId');
-    const cartItemIndex = user.cart.findIndex(item => item.productId._id.toString() === productId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
+    const cartItemIndex = user.cart.findIndex(item => item.productId._id.toString() === productId);
     if (cartItemIndex === -1) {
       return res.status(404).json({ success: false, message: "Item not found in cart" });
     }
 
-    const cartItem = user.cart[cartItemIndex];
+    let updatedCart = [...user.cart];
 
     if (action === 'increase') {
-      cartItem.quantity += 1;
+      updatedCart[cartItemIndex].quantity += 1;
     } else if (action === 'decrease') {
-      cartItem.quantity -= 1;
-
-      if (cartItem.quantity <= 0) {
-        user.cart.splice(cartItemIndex, 1); // remove the item from cart
+      updatedCart[cartItemIndex].quantity -= 1;
+      if (updatedCart[cartItemIndex].quantity <= 0) {
+        updatedCart.splice(cartItemIndex, 1);
       }
     }
 
-    await user.save();
+    // Prepare cart array for DB update (unpopulated productId)
+    const cartToUpdate = updatedCart.map(item => ({
+      productId: item.productId._id ? item.productId._id : item.productId,
+      quantity: item.quantity,
+    }));
 
-    // Recalculate totals
-    const updatedCart = user.cart.map(item => ({
+    // Atomically update user cart in DB
+    const updatedUser = await User.findOneAndUpdate(
+      { username: req.session.username },
+      { cart: cartToUpdate },
+      { new: true }
+    ).populate('cart.productId');
+
+    // Calculate totals
+    const recalculatedCart = updatedUser.cart.map(item => ({
       price: item.productId.newprice,
       quantity: item.quantity
     }));
 
-    const grandTotal = updatedCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const grandTotal = recalculatedCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    // Check if item removed
+    const removed = !updatedUser.cart.some(item => item.productId._id.toString() === productId);
+
+    // Get new quantity or 0 if removed
+    const newQuantity = removed ? 0 : updatedUser.cart.find(item => item.productId._id.toString() === productId).quantity;
 
     res.json({
       success: true,
-      removed: cartItem.quantity <= 0,
-      newQuantity: cartItem.quantity,
-      itemTotal: cartItem.productId.newprice * (cartItem.quantity || 0),
+      removed,
+      newQuantity,
+      itemTotal: removed ? 0 : updatedUser.cart.find(item => item.productId._id.toString() === productId).productId.newprice * newQuantity,
       grandTotal
     });
 

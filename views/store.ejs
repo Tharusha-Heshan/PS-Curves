@@ -2,99 +2,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PS Curves - Store</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css" />
   <style>@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');</style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
   <style>
-    .user-avatar {
-      background-color: #333;
-      color: white;
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      display: flex;
+    .add-to-cart-btn {
+      width: 9.5rem; /* fixed width to prevent shrinking */
+      height: 2.5rem; /* keep height consistent, adjust if needed */
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 1rem; /* example size, adjust to match your design */
+      color: #000; /* default text color */
+      background-color: #eee; /* example background, adjust accordingly */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .add-to-cart-btn:hover:not(:disabled) {
+      color: #343A3C;
+      background-color: #ddd;
+    }
+
+    .add-to-cart-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .add-to-cart-btn span {
+      display: inline-block;
+      font-weight: normal;
+      font-size: inherit;
+      color: inherit;
+      line-height: 1;
+    }
+
+    .add-to-cart-btn span.tick {
+      font-weight: normal;
+      /* The color of the tick inherits from the button's current text color,
+         so on hover it changes to hover color automatically */
     }
   </style>
 </head>
 <body>
-  <section id="header">
-    <a href="/">
-      <img src="/Images/Logo.png" alt="Logo" class="logo">
-    </a>
-    <div>
-      <ul id="navbar">
-        <li><a href="/">Home</a></li>
-        <li><a class="active" href="/store">Shop</a></li>
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
-        <% if (isAuth && username) { %>
-          <li class="no-hover">
-            <a href="/logout">
-              <div class="user-avatar" title="<%= username %>">
-                <%= username[0].toUpperCase() %>
-              </div>
-            </a>
-          </li>
-        <% } else { %>        
-          <li class="no-hover">
-            <button onclick="window.location.href='/login'"><span>Login</span></button>
-          </li>
-        <% } %>
-      </ul>
-    </div>
-  </section>
+  <%- include('partials/_navbar') %>
 
   <section id="hot-products">
     <h2>Product Store</h2>
     <div class="pro-container">
       <% if (products.length > 0) { %>
-        <% products.forEach(product => { %>
-          <div class="pro">
+      <% products.forEach(product => { %>
+      <div class="pro">
+        <% if (product.oldprice) { %>
+        <span class="discount-badge">
+          -<%= Math.round(((product.oldprice - product.newprice) / product.oldprice) * 100) %>%
+        </span>
+        <% } %>
+
+        <!-- Wrap only the image in a link -->
+        <a href="/product/<%= product._id %>" class="product-link">
+          <img src="<%= product.imageUrl %>" alt="<%= product.name %>" />
+        </a>
+
+        <div class="pro-des">
+          <!-- Wrap only the product name in a link -->
+          <h3>
+            <a href="/product/<%= product._id %>" class="product-link"><%= product.name %></a>
+          </h3>
+
+          <p>
             <% if (product.oldprice) { %>
-              <span class="discount-badge">
-                -<%= Math.round(((product.oldprice - product.newprice) / product.oldprice) * 100) %>%
-              </span>
+            <span class="old-price">$<%= product.oldprice %></span> <br />
             <% } %>
-            
-            <!-- Wrap only the image in a link -->
-            <a href="/product/<%= product._id %>" class="product-link">
-              <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
-            </a>
-          
-            <div class="pro-des">
-              <!-- Wrap only the product name in a link -->
-              <h3>
-                <a href="/product/<%= product._id %>" class="product-link"><%= product.name %></a>
-              </h3>
-              
-              <p>
-                <% if (product.oldprice) { %>
-                  <span class="old-price">$<%= product.oldprice %></span> <br>
-                <% } %>
-                <span class="new-price">$<%= product.newprice %></span>
-              </p>
-          
-              <form action="/cart/add/<%= product._id %>" method="POST">
-                <button type="submit"><span>Add to Cart</span></button>
-              </form>
-            </div>
+            <span class="new-price">$<%= product.newprice %></span>
+          </p>
+
+          <div class="cart-action">
+            <button class="add-to-cart-btn" data-product-id="<%= product._id %>">
+              <span>Add to Cart</span>
+            </button>
           </div>
-          
-          
-        <% }) %>
+        </div>
+      </div>
+      <% }) %>
       <% } else { %>
-        <p>No products available.</p>
+      <p>No products available.</p>
       <% } %>
     </div>
   </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const buttons = document.querySelectorAll(".add-to-cart-btn");
+  
+      buttons.forEach((button) => {
+        const buttonText = button.querySelector("span");
+  
+        button.addEventListener("click", async () => {
+          const productId = button.getAttribute("data-product-id");
+  
+          // Disable button immediately
+          button.disabled = true;
+  
+          try {
+            const response = await fetch(`/cart/add/${productId}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            });
+  
+            if (response.ok) {
+              // Instantly show tick
+              buttonText.textContent = "✓";
+              buttonText.classList.add("tick");
+  
+              // Hold tick visible for 0.5 seconds
+              setTimeout(() => {
+                // Revert back to "Add to Cart"
+                buttonText.classList.remove("tick");
+                buttonText.textContent = "Add to Cart";
+  
+                // Enable button again
+                button.disabled = false;
+              }, 500);
+            } else {
+              const error = await response.text();
+              alert("Error: " + error);
+              button.disabled = false;
+            }
+          } catch (error) {
+            console.error("Fetch error:", error);
+            alert("Failed to add to cart.");
+            button.disabled = false;
+          }
+        });
+      });
+    });
+  </script>
 </body>
+<%- include('partials/_footer') %>
 </html>

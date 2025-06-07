@@ -4,18 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign Up - PS Curves</title>
+
+  <link rel="stylesheet" href="/css/styles.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 
     body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
       background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
       font-family: "Space Grotesk", sans-serif;
+    }
+
+    #header, #footer {
+      flex-shrink: 0;
+    }
+
+    .main-content {
+      flex-grow: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      padding: 80px;
     }
 
     .signup-container,
@@ -122,43 +135,51 @@
   </style>
 </head>
 <body>
-  <% if (!success) { %>
-    <div class="signup-container">
-      <h2>Create Your Account</h2>
-      <form action="/signup" method="POST">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="e.g. gamer-guy-123" required />
-        </div>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Create a strong password" required />
-        </div>
-        <% if (typeof errorMessage !== 'undefined') { %>
-          <div id="invalid-signup">
-            <h4><%= errorMessage %></h4>
+  <%- include('partials/_navbar') %>
+
+  <div class="main-content">
+    <% if (!success) { %>
+      <div class="signup-container">
+        <h2>Create Your Account</h2>
+        <form action="/signup" method="POST">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="e.g. gamer-guy-123" required />
           </div>
-        <% } %>
-        <button type="submit" class="signup-button"><span>Sign Up</span></button>
-      </form>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a strong password" required />
+          </div>
+          <% if (typeof errorMessage !== 'undefined') { %>
+            <div id="invalid-signup">
+              <h4><%= errorMessage %></h4>
+            </div>
+          <% } %>
+          <button type="submit" class="signup-button"><span>Sign Up</span></button>
+        </form>
 
-      <div class="login-link">
-        Already have an account? <a href="/login">Log in</a>
+        <div class="login-link">
+          Already have an account? <a href="/login">Log in</a>
+        </div>
       </div>
-    </div>
-  <% } %>
+    <% } %>
 
-  <% if (success) { %>
-    <div class="signup-success-container">
-      <h2>You are Signed Up successfully.</h2>
-      <div class="login-link">
-        <a href="/login">Log in from here</a>
+    <% if (success) { %>
+      <div class="signup-success-container">
+        <h2>You are Signed Up successfully.</h2>
+        <div class="login-link">
+          <a href="/login">Log in from here</a>
+        </div>
       </div>
-    </div>
-  <% } %>
+    <% } %>
+  </div>
+
+  <footer id="footer">
+    <%- include('partials/_footer') %>
+  </footer>
 </body>
 </html>

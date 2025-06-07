@@ -9,6 +9,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
+  <%- include('partials/_navbar') %>
+
+
   <h1 id="cart-title">Your Cart</h1>
 
   <div class="cart-card">
@@ -81,18 +85,18 @@
 
           document.getElementById(`grand-total`).textContent = data.grandTotal.toFixed(2);
 
-          // Check if cart is empty by counting only cart-row elements
           const cartTableBody = document.getElementById('cart-items');
+          const checkoutBtn = document.getElementById("checkout-btn");
+
           if (cartTableBody.querySelectorAll('tr.cart-row').length === 0) {
             cartTableBody.innerHTML = `
               <tr id="empty-cart-row">
                 <td colspan="4">Your cart is empty.</td>
               </tr>
             `;
-            // Disable checkout button
-            const checkoutBtn = document.getElementById("checkout-btn");
-            checkoutBtn.disabled = true;
-            checkoutBtn.classList.add("disabled");
+            checkoutBtn.style.display = 'none';
+          } else {
+            checkoutBtn.style.display = 'inline-block';
           }
         }
       })
@@ -101,19 +105,10 @@
       });
     }
 
-    function goToCheckout() {
-      // Only redirect if button is enabled
-      const btn = document.getElementById("checkout-btn");
-      if (!btn.disabled) {
-        window.location.href = "/checkout";
-      }
-    }
-
     function checkIfCartEmpty() {
       const cartTableBody = document.getElementById("cart-items");
       const checkoutBtn = document.getElementById("checkout-btn");
 
-      // Check if there are any cart rows left
       const rows = cartTableBody.querySelectorAll("tr.cart-row");
       if (rows.length === 0) {
         cartTableBody.innerHTML = `
@@ -121,16 +116,21 @@
             <td colspan="4">Your cart is empty.</td>
           </tr>
         `;
-        checkoutBtn.disabled = true;
-        checkoutBtn.classList.add("disabled");
+        checkoutBtn.style.display = 'none';
       } else {
-        checkoutBtn.disabled = false;
-        checkoutBtn.classList.remove("disabled");
+        checkoutBtn.style.display = 'inline-block';
       }
     }
 
-    // Call initially on page load
+    function goToCheckout() {
+      const btn = document.getElementById("checkout-btn");
+      if (!btn.disabled) {
+        window.location.href = "/checkout";
+      }
+    }
+
     checkIfCartEmpty();
   </script>
+  <%- include('partials/_footer') %>
 </body>
 </html>

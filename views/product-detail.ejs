@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title><%= product.name %> - PS Curves</title>
 
-  <!-- Same styles and fonts as store.ejs -->
   <link rel="stylesheet" href="/css/styles.css" />
   <style>@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');</style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -13,38 +12,8 @@
 </head>
 <body>
 
-  <!-- Header copied from store.ejs -->
-  <section id="header">
-    <a href="/">
-      <img src="/Images/Logo.png" alt="Logo" class="logo" />
-    </a>
-    <div>
-      <ul id="navbar">
-        <li><a href="/">Home</a></li>
-        <li><a href="/store" class="active">Shop</a></li>
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
-        <% if (isAuth && username) { %>
-          <li class="no-hover">
-            <a href="/logout">
-              <div class="user-avatar" title="<%= username %>">
-                <%= username[0].toUpperCase() %>
-              </div>
-            </a>
-          </li>
-        <% } else { %>        
-          <li class="no-hover">
-            <button onclick="window.location.href='/login'"><span>Login</span></button>
-          </li>
-        <% } %>
-      </ul>
-    </div>
-  </section>
-  <p style="color: white; background: #222; padding: 10px; max-width: 1100px; margin: 10px auto; font-family: monospace;">
-    isAuth = <%= JSON.stringify(isAuth) %> | username = <%= JSON.stringify(username) %>
-  </p>
+  <%- include('partials/_navbar') %>
+  
   <a href="/store" class="back-link">← Back to Store</a>
 
   <div class="product-detail-container">
@@ -74,6 +43,6 @@
       <% } %>
     </div>
   </div>
-  
+  <%- include('partials/_footer') %>
 </body>
 </html>
