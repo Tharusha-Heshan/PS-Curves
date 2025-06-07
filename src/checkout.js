@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { User, Product, Order } = require('./config');
 
-// Middleware to parse form data
+
 app.use(express.urlencoded({ extended: true }));
 
-// GET /checkout - show checkout page
+
 app.get('/checkout', async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -32,7 +32,7 @@ app.get('/checkout', async (req, res) => {
       };
     });
 
-    // Calculate grand total
+
     const grandTotal = cart.reduce((acc, item) => acc + item.total, 0);
 
     res.render('checkout', { cart, grandTotal });
@@ -42,7 +42,7 @@ app.get('/checkout', async (req, res) => {
   }
 });
 
-// POST /place-order - save the order to DB
+
 app.post('/place-order', async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -55,7 +55,7 @@ app.post('/place-order', async (req, res) => {
       return res.status(400).send("Your cart is empty.");
     }
 
-    // Prepare order items from cart
+
     const items = user.cart.map(item => {
       const product = item.productId;
       return {
@@ -66,10 +66,10 @@ app.post('/place-order', async (req, res) => {
       };
     });
 
-    // Calculate total amount
+
     const totalAmount = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-    // Create a new order document
+
     const order = new Order({
       userId: user._id,
       items: items,
@@ -87,11 +87,11 @@ app.post('/place-order', async (req, res) => {
 
     await order.save();
 
-    // Clear user's cart
+
     user.cart = [];
     await user.save();
 
-    // Send success message or redirect to a confirmation page
+
     res.send("<h2>Order placed successfully!</h2><p>Thank you for your purchase.</p>");
 
   } catch (err) {

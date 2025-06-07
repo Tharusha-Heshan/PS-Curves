@@ -1,48 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><%= product.name %> - PS Curves</title>
+  <title>
+    <%= product.name %> - PS Curves
+  </title>
 
   <link rel="stylesheet" href="/css/styles.css" />
-  <style>@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');</style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Space+Grotesk:wght@300..700&display=swap');
+  </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .add-to-cart-btn {
+      width: 160px;
+      height: 60px;
+      position: relative;
+      background-color: transparent;
+      color: white;
+      font-size: 18px;
+      border-radius: 5px;
+      border: 2px solid white;
+      padding: 12px 28px;
+      cursor: pointer;
+      overflow: hidden;
+      z-index: 1;
+      transition: color 0.2s ease, transform 0.3s ease;
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    .add-to-cart-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: white;
+      z-index: 0;
+      transition: width 0.1s ease;
+    }
+
+    .add-to-cart-btn:hover::before {
+      width: 100%;
+    }
+
+    .add-to-cart-btn:hover {
+      color: #1e1e1e;
+    }
+
+    .add-to-cart-btn span {
+      position: relative;
+      z-index: 2;
+    }
+  </style>
 
 </head>
+
 <body>
 
   <%- include('partials/_navbar') %>
-  
-  <a href="/store" class="back-link">← Back to Store</a>
+    <div class="product-detail-container" style="margin: 2rem auto; max-width: 900px;">
+      <div class="product-detail-content">
+        <h1>
+          <%= product.name %>
+        </h1>
 
-  <div class="product-detail-container">
-    <div class="product-detail-content">
-      <h1><%= product.name %></h1>
-  
-      <p>
-        <br>
-        <% if (product.oldprice) { %>
-          <span class="old-detailed-price">$<%= product.oldprice %></span>
-        <% } %>
-        <span class="new-detailed-price">$<%= product.newprice %></span>
-      </p>
-      <br>
-  
-      <p><%= product.description || "No description available." %></p>
-  
-      <form action="/cart/add/<%= product._id %>" method="POST">
-        <button type="submit"><span>Add to Cart</span></button>
-      </form>
+        <p>
+          <% if (product.oldprice) { %>
+            <span class="old-detailed-price">$<%= product.oldprice %></span>
+            <% } %>
+              <span class="new-detailed-price">$<%= product.newprice %></span>
+        </p>
+
+        <p>
+          <%= product.description || "No description available." %>
+        </p>
+
+        <button id="addToCartBtn" class="add-to-cart-btn" data-product-id="<%= product._id %>"
+          style="margin-top: 1.5rem;">
+          <span>Add to Cart</span>
+        </button>
+      </div>
+
+      <div class="product-detail-image-wrapper">
+        <% if (product.imageUrl) { %>
+          <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="product-detail-image" />
+          <% } %>
+      </div>
     </div>
-  
-    <!-- Right: Image -->
-    <div class="product-detail-image-wrapper">
-      <% if (product.imageUrl) { %>
-        <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="product-detail-image" />
-      <% } %>
-    </div>
-  </div>
-  <%- include('partials/_footer') %>
+
+    <%- include('partials/_footer') %>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const button = document.getElementById("addToCartBtn");
+          const buttonText = button.querySelector("span");
+
+          button.addEventListener("click", async () => {
+            const productId = button.getAttribute("data-product-id");
+
+            button.disabled = true;
+
+            try {
+              const response = await fetch(`/cart/add/${productId}`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+              });
+
+              if (response.ok) {
+                buttonText.textContent = "✓";
+                buttonText.classList.add("tick");
+
+                setTimeout(() => {
+                  buttonText.classList.remove("tick");
+                  buttonText.textContent = "Add to Cart";
+                  button.disabled = false;
+                }, 500);
+              } else {
+                const error = await response.text();
+                alert("Error: " + error);
+                button.disabled = false;
+              }
+            } catch (error) {
+              console.error("Fetch error:", error);
+              alert("Failed to add to cart.");
+              button.disabled = false;
+            }
+          });
+        });
+      </script>
+
 </body>
+
 </html>

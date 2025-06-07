@@ -1,3 +1,69 @@
+<section id="header">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <a href="/">
+    <img src="/Images/Logo.png" alt="Logo" class="logo" />
+  </a>
+
+  <div class="hamburger" id="hamburger">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <nav id="navbar-desktop">
+    <ul id="navbar">
+      <li class="nav-item"><a class="active" href="/">Home</a></li>
+      <li class="nav-item"><a href="/store">Shop</a></li>
+      <li class="nav-item"><a href="/about">About</a></li>
+      <li class="nav-item"><a href="/contact">Contact</a></li>
+      <li class="nav-item"><a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+
+      <% if (isAuth) { %>
+        <li class="nav-item no-hover">
+          <div class="user-menu">
+            <div class="user-avatar" title="<%= username %>">
+              <%= username.charAt(0).toUpperCase() %>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='/logout'">
+              <span>Logout</span>
+            </button>
+          </div>
+        </li>
+      <% } else { %>
+        <li class="nav-item no-hover">
+          <button onclick="window.location.href='/login'"><span>Login</span></button>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+
+  <nav id="navbar-mobile">
+    <ul>
+      <li class="nav-item"><a class="active" href="/">Home</a></li>
+      <li class="nav-item"><a href="/store">Shop</a></li>
+      <li class="nav-item"><a href="/about">About</a></li>
+      <li class="nav-item"><a href="/contact">Contact</a></li>
+      <li class="nav-item"><a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+
+      <% if (isAuth) { %>
+        <li class="nav-item no-hover">
+          <div class="user-menu">
+            <div class="user-avatar" title="<%= username %>">
+              <%= username.charAt(0).toUpperCase() %>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='/logout'">
+              <span>Logout</span>
+            </button>
+          </div>
+        </li>
+      <% } else { %>
+        <li class="nav-item no-hover">
+          <button onclick="window.location.href='/login'"><span>Login</span></button>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+</section>
+
 <style>
   #header {
     background-color: #212121;
@@ -10,6 +76,7 @@
     left: 0;
     z-index: 999;
     height: 60px;
+    padding: 0 20px;
   }
 
   .logo {
@@ -17,28 +84,28 @@
     height: 45px;
   }
 
+  /* Original navbar styles for desktop */
   #navbar {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 60px;
+    gap: 15px;
   }
 
-  #navbar li {
-    width: 100px;
-    list-style: none;
+  #navbar .nav-item {
+    min-width: 100px;
     position: relative;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     overflow: hidden;
     z-index: 1;
     transition: color 0.2s ease, transform 0.3s ease;
   }
 
-  #navbar li:not(.no-hover)::before {
+  #navbar .nav-item:not(.no-hover)::before {
     content: "";
     position: absolute;
     top: 0;
@@ -50,15 +117,15 @@
     transition: width 0.2s ease;
   }
 
-  #navbar li:not(.no-hover):hover::before {
+  #navbar .nav-item:not(.no-hover):hover::before {
     width: 100%;
   }
 
-  #navbar li:not(.no-hover):hover a {
+  #navbar .nav-item:not(.no-hover):hover a {
     color: #1e1e1e;
   }
 
-  #navbar li a {
+  #navbar .nav-item a {
     text-decoration: none;
     color: white;
     position: relative;
@@ -70,13 +137,13 @@
     height: 100%;
   }
 
-  #navbar li:last-child {
+  #navbar .nav-item:last-child {
     margin-right: 15px;
   }
 
-  #navbar li.no-hover button {
+  #navbar .nav-item.no-hover button {
     width: 100%;
-    height: 100%;
+    height: 70%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -122,45 +189,172 @@
     z-index: 2;
   }
 
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 15px;
+  }
+
   .user-avatar {
     background-color: #444;
     color: white;
     font-weight: bold;
-    width: 35px;
-    height: 35px;
+    width: 70px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
+    cursor: default;
+    user-select: none;
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  .logout-btn {
+    position: relative;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 6px 18px;
+    overflow: hidden;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .logout-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: white;
+    z-index: 0;
+    transition: width 0.2s ease;
+  }
+
+  .logout-btn:hover::before {
+    width: 100%;
+  }
+
+  .logout-btn:hover {
+    color: #1e1e1e;
+  }
+
+  .logout-btn span {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Hamburger Icon */
+  .hamburger {
+    display: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  #navbar-mobile,
+  .hamburger {
+    display: none;
+  }
+
+  #navbar-desktop {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    #navbar-desktop {
+      display: none !important;
+    }
+
+    .hamburger {
+      display: block;
+    }
+
+    #navbar-mobile {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      background-color: #212121;
+      width: 100%;
+      padding: 10px 20px;
+      gap: 10px;
+      z-index: 998;
+    }
+
+    #navbar-mobile.show {
+      display: flex !important;
+    }
+
+    #navbar-mobile .nav-item {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    #navbar-mobile .user-menu {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    #navbar-mobile .logout-btn,
+    #navbar-mobile button {
+      width: 100%;
+      padding: 8px 10px;
+    }
+
+    #navbar-mobile .user-avatar {
+      margin-right: 0;
+    }
+
+    #navbar-mobile .user-avatar {
+      display: none !important;
+    }
+
+    #navbar-mobile a {
+      text-decoration: none !important;
+      color: white !important;
+    }
+
+    #navbar-mobile a:hover {
+      color: #ddd !important;
+    }
+
+    #navbar-mobile ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    #navbar-mobile li {
+      margin-bottom: 12px;
+    }
+
+    #navbar-mobile li:last-child {
+      margin-bottom: 0;
+    }
   }
 </style>
 
-<section id="header">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <a href="/">
-    <img src="/Images/Logo.png" alt="Logo" class="logo">
-  </a>
-  <div>
-    <ul id="navbar">
-      <li><a class="active" href="/">Home</a></li>
-      <li><a href="/store">Shop</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/contact">Contact</a></li>
-      <li><a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileNavbar = document.getElementById('navbar-mobile');
 
-      <% if (isAuth) { %>
-        <li class="no-hover">
-          <a href="/logout">
-            <div class="user-avatar" title="<%= username %>">
-              <%= username.charAt(0).toUpperCase() %>
-            </div>
-          </a>
-        </li>
-      <% } else { %>
-        <li class="no-hover">
-          <button onclick="window.location.href='/login'"><span>Login</span></button>
-        </li>
-      <% } %>
-    </ul>
-  </div>
-</section>
+  hamburger.addEventListener('click', () => {
+    mobileNavbar.classList.toggle('show');
+  });
+</script>

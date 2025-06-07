@@ -1,15 +1,15 @@
-// src/signup.js
+
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const { User } = require("./config"); // adjust path if needed
+const { User } = require("./config");
 
-// GET /signup
+
 router.get("/", (req, res) => {
   res.render("signup", { success: false, errorMessage: "" });
 });
 
-// POST /signup
+
 router.post("/", async (req, res) => {
   try {
     const data = {

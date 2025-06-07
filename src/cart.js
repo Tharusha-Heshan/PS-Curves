@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Product, User } = require('./config');
 
-// Show cart items (GET /cart)
+
 router.get("/", async (req, res) => {
   if (!req.session.isAuth || !req.session.username) {
     return res.redirect('/login');
@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Add to cart (POST /cart/add/:id)
+
 router.post('/add/:id', async (req, res) => {
   if (!req.session.isAuth || !req.session.username) {
     return res.redirect('/login');
@@ -45,7 +45,7 @@ router.post('/add/:id', async (req, res) => {
     const product = await Product.findById(productId);
     if (!product) return res.status(404).send("Product not found");
 
-    // Try to increment quantity if product already in cart
+
     const updatedUser = await User.findOneAndUpdate(
       { username: req.session.username, 'cart.productId': productId },
       { $inc: { 'cart.$.quantity': 1 } },
@@ -53,7 +53,7 @@ router.post('/add/:id', async (req, res) => {
     );
 
     if (!updatedUser) {
-      // Product not in cart, so add new item
+
       await User.findOneAndUpdate(
         { username: req.session.username },
         { $push: { cart: { productId, quantity: 1 } } }
@@ -68,7 +68,7 @@ router.post('/add/:id', async (req, res) => {
   }
 });
 
-// Update cart item quantity (POST /cart/update)
+
 router.post('/update', async (req, res) => {
   const { productId, action } = req.body;
 
@@ -77,7 +77,7 @@ router.post('/update', async (req, res) => {
   }
 
   try {
-    // Get current user with cart populated
+
     const user = await User.findOne({ username: req.session.username }).populate('cart.productId');
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
@@ -99,20 +99,20 @@ router.post('/update', async (req, res) => {
       }
     }
 
-    // Prepare cart array for DB update (unpopulated productId)
+
     const cartToUpdate = updatedCart.map(item => ({
       productId: item.productId._id ? item.productId._id : item.productId,
       quantity: item.quantity,
     }));
 
-    // Atomically update user cart in DB
+
     const updatedUser = await User.findOneAndUpdate(
       { username: req.session.username },
       { cart: cartToUpdate },
       { new: true }
     ).populate('cart.productId');
 
-    // Calculate totals
+
     const recalculatedCart = updatedUser.cart.map(item => ({
       price: item.productId.newprice,
       quantity: item.quantity
@@ -120,10 +120,10 @@ router.post('/update', async (req, res) => {
 
     const grandTotal = recalculatedCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // Check if item removed
+
     const removed = !updatedUser.cart.some(item => item.productId._id.toString() === productId);
 
-    // Get new quantity or 0 if removed
+
     const newQuantity = removed ? 0 : updatedUser.cart.find(item => item.productId._id.toString() === productId).quantity;
 
     res.json({

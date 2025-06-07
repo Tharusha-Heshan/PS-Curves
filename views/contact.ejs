@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -70,36 +71,40 @@
         font-size: 28px;
       }
 
-      .contact-text, .contact-details p {
+      .contact-text,
+      .contact-details p {
         text-align: center;
       }
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
 
   <%- include('partials/_navbar') %>
 
-  <div class="contact-container">
-    <div class="contact-text">
-      <h1>Contact Us</h1>
-      <p>If you need any help with your PlayStation disc orders, feel free to reach out to us. Our team is here to make your gaming experience smooth and enjoyable!</p>
+    <div class="contact-container">
+      <div class="contact-text">
+        <h1>Contact Us</h1>
+        <p>If you need any help with your PlayStation disc orders, feel free to reach out to us. Our team is here to
+          make your gaming experience smooth and enjoyable!</p>
 
-      <div class="contact-details">
-        <p><i class="fa-solid fa-envelope"></i> Email: support@pscurves.com</p>
-        <p><i class="fa-solid fa-phone"></i> Phone: +1 (555) 123-4567</p>
-        <p><i class="fa-brands fa-whatsapp"></i> WhatsApp: +1 (555) 765-4321</p>
-        <p><i class="fa-solid fa-fax"></i> Fax: +1 (555) 987-6543</p>
-        <p><i class="fa-solid fa-location-dot"></i> Address: 80 Prince Street, 11, Colombo, Sri Lanka</p>
-        <p><i class="fa-solid fa-clock"></i> Business Hours: Mon – Fri, 8:00 AM – 6:00 PM</p>
+        <div class="contact-details">
+          <p><i class="fa-solid fa-envelope"></i> Email: support@pscurves.com</p>
+          <p><i class="fa-solid fa-phone"></i> Phone: +1 (555) 123-4567</p>
+          <p><i class="fa-brands fa-whatsapp"></i> WhatsApp: +1 (555) 765-4321</p>
+          <p><i class="fa-solid fa-fax"></i> Fax: +1 (555) 987-6543</p>
+          <p><i class="fa-solid fa-location-dot"></i> Address: 80 Prince Street, 11, Colombo, Sri Lanka</p>
+          <p><i class="fa-solid fa-clock"></i> Business Hours: Mon – Fri, 8:00 AM – 6:00 PM</p>
+        </div>
+      </div>
+
+      <div class="contact-image-wrapper">
+        <img src="/Images/contact.png" alt="Contact PS Curves" class="contact-image" />
       </div>
     </div>
-
-    <div class="contact-image-wrapper">
-      <img src="/Images/contact.png" alt="Contact PS Curves" class="contact-image" />
-    </div>
-  </div>
-  <%- include('partials/_footer') %>
+    <%- include('partials/_footer') %>
 </body>
+
 </html>

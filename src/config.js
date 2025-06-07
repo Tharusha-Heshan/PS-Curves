@@ -4,7 +4,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 
 require('dotenv').config();
 
-// MongoDB connection
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("Database connected successfully");
@@ -18,7 +18,7 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 
-// User Schema
+
 const LoginSchema = new mongoose.Schema({
   username: { type: String, required: true },
   email: { type: String, required: true },
@@ -41,7 +41,7 @@ const ProductSchema = new mongoose.Schema({
   description: { type: String }
 }, { timestamps: true });
 
-// Order Schema
+
 const OrderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   items: [

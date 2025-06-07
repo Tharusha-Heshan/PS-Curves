@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Use session with MongoDB store
+
 app.use(session({
   secret: process.env.SECRET_KEY || "default_secret_key",
   resave: false,
@@ -25,11 +25,11 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Set EJS view engine
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
-// Home route
+
 app.get("/", async (req, res) => {
   try {
     const recentProducts = await Product.find().sort({ createdAt: -1 }).limit(5);
@@ -57,7 +57,7 @@ app.get('/about', (req, res) => {
 });
 
 
-// Checkout page
+
 app.get('/checkout', async (req, res) => {
   if (!req.session.isAuth || !req.session.username) {
     return res.redirect('/login');
@@ -65,7 +65,7 @@ app.get('/checkout', async (req, res) => {
 
   try {
     const user = await User.findOne({ username: req.session.username }).populate('cart.productId');
-    
+
     if (!user || !user.cart) {
       return res.render('checkout', { cart: [], grandTotal: 0 });
     }
@@ -97,7 +97,7 @@ app.get('/checkout', async (req, res) => {
   }
 });
 
-// Logout route
+
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -108,14 +108,14 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Store page
+
 app.get('/store', async (req, res) => {
   try {
     const products = await Product.find();
-    res.render('store', { 
-      products, 
-      isAuth: req.session.isAuth || false, 
-      username: req.session.username || null 
+    res.render('store', {
+      products,
+      isAuth: req.session.isAuth || false,
+      username: req.session.username || null
     });
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -123,7 +123,7 @@ app.get('/store', async (req, res) => {
   }
 });
 
-// Product detail page
+
 app.get('/product/:id', async (req, res) => {
   try {
     const productId = req.params.id;
@@ -131,7 +131,7 @@ app.get('/product/:id', async (req, res) => {
     if (!product) {
       return res.status(404).send('Product not found');
     }
-    res.render('product-detail', { 
+    res.render('product-detail', {
       product,
       isAuth: req.session.isAuth || false,
       username: req.session.username || null
@@ -142,13 +142,13 @@ app.get('/product/:id', async (req, res) => {
   }
 });
 
-// Import routes
+
 const signupRoute = require("./signup");
 const loginRoute = require("./login");
 const addProductRoute = require("./add-product");
 const cartRoute = require("./cart");
 
-// Use routes
+
 app.use("/signup", signupRoute);
 app.use("/login", loginRoute);
 app.use("/add-product", addProductRoute);
@@ -162,7 +162,7 @@ app.get('/order-confirmation', (req, res) => {
 });
 
 
-// Place order route (POST /place-order)
+
 app.post('/place-order', async (req, res) => {
   if (!req.session.isAuth || !req.session.username) {
     return res.status(401).send('Unauthorized: Please login to place an order.');
@@ -174,7 +174,7 @@ app.post('/place-order', async (req, res) => {
       return res.status(400).send('Your cart is empty.');
     }
 
-    // Build order items array from user's cart
+
     const orderItems = user.cart.map(item => ({
       productId: item.productId._id,
       name: item.productId.name,
@@ -182,10 +182,10 @@ app.post('/place-order', async (req, res) => {
       quantity: item.quantity
     }));
 
-    // Calculate total amount
+
     const totalAmount = orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-    // Get shipping and payment info from the form POST data
+
     const {
       fullName,
       email,
@@ -196,7 +196,7 @@ app.post('/place-order', async (req, res) => {
       paymentMethod
     } = req.body;
 
-    // Create new order document
+
     const newOrder = new Order({
       userId: user._id,
       items: orderItems,
@@ -214,11 +214,11 @@ app.post('/place-order', async (req, res) => {
 
     await newOrder.save();
 
-    // Clear user's cart
+
     user.cart = [];
     await user.save();
 
-    // Redirect to home or order confirmation page
+
     res.redirect('/order-confirmation');
 
   } catch (error) {
@@ -227,7 +227,7 @@ app.post('/place-order', async (req, res) => {
   }
 });
 
-// Start server
+
 const port = 5000;
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
